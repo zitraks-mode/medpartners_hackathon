@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPartners | Data Pipeline</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <nav class="bg-white border-b border-slate-200 px-8 py-4">
+        <h1 class="text-xl font-semibold text-slate-800">MedPartners <span class="text-blue-600 font-normal">| Data Pipeline</span></h1>
+    </nav>
+
+    <main class="max-w-4xl mx-auto mt-10 p-6">
+        <div class="card">
+            <h2 class="text-lg font-medium text-slate-900 mb-6">Загрузка документов</h2>
+            <div class="flex gap-4 items-center">
+                <input type="file" id="fileInput" class="file-input">
+                <button onclick="uploadFile()" class="btn-primary">Загрузить</button>
+            </div>
+        </div>
+
+        <div id="statusArea" class="card mt-8 hidden">
+            <h3 class="status-title">Статус обработки</h3>
+            <div class="grid grid-cols-2 gap-8">
+                <div>
+                    <p class="text-sm text-slate-500">Состояние</p>
+                    <p id="statusText" class="status-value">---</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-500">Позиций найдено</p>
+                    <p id="itemsCount" class="status-value">0</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
