@@ -1,8 +1,6 @@
 // FIX: порт выравнен с main.py
 const API_BASE = 'http://127.0.0.1:8080';
 
-// ─── Navigation ───
-
 const sectionTitles = {
     dashboard: 'Дашборд',
     upload:    'Загрузка архива',
@@ -23,7 +21,6 @@ function showSection(name, el) {
     if (name === 'partners')  loadPartners();
 }
 
-// ─── Toast ───
 
 let toastTimer;
 function toast(msg, type = '') {
@@ -34,7 +31,6 @@ function toast(msg, type = '') {
     toastTimer = setTimeout(() => el.className = 'toast hidden', 3500);
 }
 
-// ─── Dashboard ───
 
 async function loadDashboard() {
     try {
@@ -50,7 +46,6 @@ async function loadDashboard() {
         animateCount('st-services',   d.total_services);
         animateCount('st-items',      d.total_items);
 
-        // Normalization ring
         const pct = d.normalization_pct;
         document.getElementById('normPct').textContent = pct + '%';
         const circ = 2 * Math.PI * 50; // 314
@@ -62,7 +57,6 @@ async function loadDashboard() {
         animateCount('unmatchedCount', d.unmatched_items);
         animateCount('verifiedCount',  d.verified_items);
 
-        // Unmatched badge in nav
         const badge = document.getElementById('unmatchedBadge');
         if (d.unmatched_items > 0) {
             badge.textContent = d.unmatched_items;
@@ -71,7 +65,6 @@ async function loadDashboard() {
             badge.style.display = 'none';
         }
 
-        // Status bar
         const total = d.total_docs || 1;
         const setPct = (id, val) => {
             document.getElementById(id).style.width = (val / total * 100) + '%';
@@ -102,8 +95,6 @@ function animateCount(id, target) {
         if (step >= steps) { el.textContent = target; clearInterval(interval); }
     }, duration / steps);
 }
-
-// ─── Upload ───
 
 let selectedFile = null;
 
@@ -333,7 +324,6 @@ async function loadPartnersForService(serviceId, btn) {
     }
 }
 
-// ─── Unmatched ───
 
 async function loadUnmatched() {
     const container = document.getElementById('unmatchedList');
@@ -414,7 +404,6 @@ async function matchItem(itemId) {
     }
 }
 
-// ─── Partners ───
 
 async function loadPartners() {
     const container = document.getElementById('partnersList');
@@ -489,7 +478,6 @@ async function togglePartnerServices(partnerId, btn) {
     }
 }
 
-// ─── Utils ───
 
 function esc(str) {
     if (!str) return '';
@@ -500,13 +488,9 @@ function esc(str) {
         .replace(/"/g, '&quot;');
 }
 
-// ─── Init ───
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Search on Enter
     const inp = document.getElementById('searchInput');
     if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 
-    // Load dashboard on start
     loadDashboard();
 });

@@ -27,18 +27,12 @@ def get_db():
         db.close()
 
 
-# ═══════════════════════════════════════════════
-#  Дашборд
-# ═══════════════════════════════════════════════
 
 @app.get("/dashboard/stats", response_model=schemas.DashboardStats, summary="Статистика для дашборда")
 def dashboard_stats(db: Session = Depends(get_db)):
     return crud.get_dashboard_stats(db)
 
 
-# ═══════════════════════════════════════════════
-#  Загрузка архива
-# ═══════════════════════════════════════════════
 
 @app.post("/upload-archive", summary="Загрузить ZIP-архив с прайсами")
 def upload_archive(
@@ -83,9 +77,6 @@ def get_status(doc_id: str, db: Session = Depends(get_db)):
     }
 
 
-# ═══════════════════════════════════════════════
-#  Справочник услуг
-# ═══════════════════════════════════════════════
 
 @app.get("/services", response_model=List[schemas.ServiceOut], summary="Список услуг справочника")
 def list_services(
@@ -124,9 +115,6 @@ def upload_catalog(entries: List[schemas.CatalogEntry], db: Session = Depends(ge
     return result
 
 
-# ═══════════════════════════════════════════════
-#  Партнёры
-# ═══════════════════════════════════════════════
 
 @app.get("/partners", response_model=List[schemas.PartnerOut], summary="Список партнёров")
 def list_partners(
@@ -151,9 +139,6 @@ def partner_services(partner_id: str, db: Session = Depends(get_db)):
     return crud.get_services_for_partner(db, partner_id)
 
 
-# ═══════════════════════════════════════════════
-#  Поиск
-# ═══════════════════════════════════════════════
 
 @app.get("/search", response_model=schemas.SearchResponse, summary="Полнотекстовый поиск")
 def search(q: str, db: Session = Depends(get_db)):
@@ -162,9 +147,6 @@ def search(q: str, db: Session = Depends(get_db)):
     return crud.search_all(db, q)
 
 
-# ═══════════════════════════════════════════════
-#  Верификация / несопоставленные
-# ═══════════════════════════════════════════════
 
 @app.get(
     "/unmatched",
@@ -183,4 +165,3 @@ def match_item(body: schemas.MatchRequest, db: Session = Depends(get_db)):
     return result
 
 
-# Запуск: uvicorn main:app --host 0.0.0.0 --port 8080 --reload

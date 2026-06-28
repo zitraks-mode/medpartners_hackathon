@@ -4,7 +4,6 @@ from uuid import UUID
 from datetime import datetime, date
 
 
-# ─── Document ───
 
 class DocumentStatusResponse(BaseModel):
     status: str
@@ -15,7 +14,6 @@ class DocumentStatusResponse(BaseModel):
         from_attributes = True
 
 
-# ─── Dashboard ───
 
 class DashboardStats(BaseModel):
     total_docs: int
@@ -30,7 +28,6 @@ class DashboardStats(BaseModel):
     normalization_pct: float
 
 
-# ─── Service ───
 
 class ServiceOut(BaseModel):
     service_id: UUID
@@ -51,7 +48,6 @@ class ServiceCreate(BaseModel):
     synonyms: Optional[List[str]] = None
 
 
-# ─── Partner ───
 
 class PartnerOut(BaseModel):
     partner_id: UUID
@@ -66,7 +62,6 @@ class PartnerOut(BaseModel):
         from_attributes = True
 
 
-# ─── PriceItem ───
 
 class PriceItemOut(BaseModel):
     item_id: UUID
@@ -87,7 +82,6 @@ class PriceItemOut(BaseModel):
         from_attributes = True
 
 
-# ─── Search ───
 
 class SearchResponse(BaseModel):
     services: List[ServiceOut]
@@ -95,7 +89,6 @@ class SearchResponse(BaseModel):
     price_items: List[PriceItemOut]
 
 
-# ─── Match ───
 
 class MatchRequest(BaseModel):
     item_id: str
@@ -103,7 +96,6 @@ class MatchRequest(BaseModel):
     note: Optional[str] = None
 
 
-# ─── Catalog upload ───
 
 class CatalogEntry(BaseModel):
     service_name: str

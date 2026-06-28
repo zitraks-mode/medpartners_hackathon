@@ -3,8 +3,6 @@ import json
 import os
 
 API_BASE = "http://127.0.0.1:8080"
-
-# catalog_data.json должен лежать рядом с этим скриптом
 data_path = os.path.join(os.path.dirname(__file__), "catalog_data.json")
 with open(data_path, encoding="utf-8") as f:
     entries = json.load(f)

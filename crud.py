@@ -4,7 +4,6 @@ from models import PriceDocument, PriceItem, Service, Partner, ParseStatusEnum
 from typing import Optional
 
 
-# ─── Documents ───
 
 def get_document_by_id(db: Session, doc_id):
     return db.query(PriceDocument).filter(PriceDocument.doc_id == str(doc_id)).first()
@@ -20,7 +19,6 @@ def count_items_by_doc(db: Session, doc_id) -> int:
     return db.query(PriceItem).filter(PriceItem.doc_id == str(doc_id)).count()
 
 
-# ─── Dashboard stats ───
 
 def get_dashboard_stats(db: Session) -> dict:
     total_docs = db.query(PriceDocument).count()
@@ -28,7 +26,6 @@ def get_dashboard_stats(db: Session) -> dict:
     error_docs = db.query(PriceDocument).filter(PriceDocument.parse_status == ParseStatusEnum.error).count()
     needs_review_docs = db.query(PriceDocument).filter(PriceDocument.parse_status == ParseStatusEnum.needs_review).count()
     total_items = db.query(PriceItem).filter(PriceItem.is_active == True).count()
-    # FIX: используем .is_(None) вместо == None
     unmatched_items = db.query(PriceItem).filter(
         PriceItem.service_id.is_(None), PriceItem.is_active == True
     ).count()
@@ -57,7 +54,6 @@ def get_dashboard_stats(db: Session) -> dict:
     }
 
 
-# ─── Services ───
 
 def get_services(db: Session, category: Optional[str] = None, skip: int = 0, limit: int = 100):
     q = db.query(Service).filter(Service.is_active == True)
@@ -83,7 +79,6 @@ def create_service(db: Session, data: dict):
     return svc
 
 
-# ─── Partners ───
 
 def get_partners(db: Session, city: Optional[str] = None, is_active: Optional[bool] = None,
                  skip: int = 0, limit: int = 100):
@@ -105,10 +100,8 @@ def get_services_for_partner(db: Session, partner_id: str):
     )
 
 
-# ─── Unmatched / Match ───
 
 def get_unmatched_items(db: Session, skip: int = 0, limit: int = 100):
-    # FIX: .is_(None) вместо == None
     return (
         db.query(PriceItem)
         .filter(PriceItem.service_id.is_(None), PriceItem.is_active == True)
@@ -127,7 +120,6 @@ def match_item(db: Session, item_id: str, service_id: str, note: Optional[str] =
     return item
 
 
-# ─── Search ───
 
 def search_all(db: Session, q: str, limit: int = 50):
     term = f"%{q}%"
@@ -141,7 +133,6 @@ def search_all(db: Session, q: str, limit: int = 50):
     return {"services": services, "partners": partners, "price_items": items}
 
 
-# ─── Каталог ───
 
 def load_service_catalog(db: Session, entries: list):
     created = 0
@@ -159,17 +150,14 @@ def load_service_catalog(db: Session, entries: list):
     return {"created": created, "updated": updated}
 
 
-# ─── Версионирование: архивация старой позиции при дублировании ───
 
 def archive_old_item(db: Session, old_item: PriceItem, new_item_id) -> None:
-    """Архивирует старую позицию, проставляя ссылку на новую версию."""
     old_item.is_active = False
     old_item.superseded_by = new_item_id
     db.add(old_item)
 
 
 def find_existing_active_item(db: Session, partner_id, service_name_raw: str, effective_date=None):
-    """Ищет активную позицию с таким же названием для данного партнёра."""
     q = db.query(PriceItem).filter(
         PriceItem.partner_id == partner_id,
         PriceItem.service_name_raw == service_name_raw,

@@ -89,7 +89,6 @@ class PriceItem(Base):
     price_original = Column(Numeric, nullable=True)
     currency_original = Column(Enum(CurrencyEnum), default=CurrencyEnum.KZT)
 
-    # FIX: добавлена предыдущая цена для детектирования аномалий > 50%
     prev_price_resident_kzt = Column(Numeric, nullable=True)
     price_anomaly = Column(Boolean, default=False)
 
@@ -98,7 +97,6 @@ class PriceItem(Base):
     effective_date = Column(Date, nullable=True)
     is_active = Column(Boolean, default=True)
 
-    # FIX: версионирование — ссылка на предыдущую версию позиции
     superseded_by = Column(UUID(as_uuid=True), ForeignKey("price_items.item_id"), nullable=True)
 
     document = relationship("PriceDocument", back_populates="items")
