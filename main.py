@@ -5,6 +5,7 @@ import crud, schemas, services
 import os
 import shutil
 import zipfile
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="MedPartners API")
@@ -12,7 +13,7 @@ app = FastAPI(title="MedPartners API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False, # ОБЯЗАТЕЛЬНО False, иначе будет конфликт с "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
