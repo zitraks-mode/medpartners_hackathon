@@ -4,39 +4,321 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedPartners | Data Pipeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body>
 
-    <nav class="bg-white border-b border-slate-200 px-8 py-4">
-        <h1 class="text-xl font-semibold text-slate-800">MedPartners <span class="text-blue-600 font-normal">| Data Pipeline</span></h1>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-mark">M</div>
+        <div class="logo-text">
+            <span class="logo-title">MedPartners</span>
+            <span class="logo-sub">Data Pipeline</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="dashboard" onclick="showSection('dashboard', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Дашборд
+        </a>
+        <a href="#" class="nav-item" data-section="upload" onclick="showSection('upload', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Загрузка архива
+        </a>
+        <a href="#" class="nav-item" data-section="search" onclick="showSection('search', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Поиск
+        </a>
+        <a href="#" class="nav-item" data-section="unmatched" onclick="showSection('unmatched', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Верификация
+            <span class="badge" id="unmatchedBadge" style="display:none"></span>
+        </a>
+        <a href="#" class="nav-item" data-section="partners" onclick="showSection('partners', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Партнёры
+        </a>
     </nav>
 
-    <main class="max-w-4xl mx-auto mt-10 p-6">
+    <div class="sidebar-footer">
+        <a href="http://127.0.0.1:8080/docs" target="_blank" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            API Docs ↗
+        </a>
+    </div>
+</aside>
+
+<!-- Main -->
+<div class="main-wrap">
+
+    <!-- Top bar -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <span class="topbar-title" id="topbarTitle">Дашборд</span>
+        </div>
+        <div class="topbar-right">
+            <div class="pulse-dot"></div>
+            <span class="topbar-status">Система активна</span>
+        </div>
+    </header>
+
+    <!-- ══════════ DASHBOARD ══════════ -->
+    <section id="sec-dashboard" class="section active">
+        <div class="stats-grid">
+            <div class="stat-card accent">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="stat-value" id="st-total-docs">—</div>
+                    <div class="stat-label">Документов загружено</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="stat-value" id="st-done-docs">—</div>
+                    <div class="stat-label">Обработано успешно</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="stat-value" id="st-review-docs">—</div>
+                    <div class="stat-label">На ревью</div>
+                </div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="stat-value" id="st-error-docs">—</div>
+                    <div class="stat-label">Ошибок</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-row">
+            <!-- Нормализация -->
+            <div class="card normalization-card">
+                <div class="card-header">
+                    <h3>Нормализация услуг</h3>
+                    <span class="card-hint">% автосопоставления</span>
+                </div>
+                <div class="norm-ring-wrap">
+                    <svg class="norm-ring" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="50" class="ring-bg"/>
+                        <circle cx="60" cy="60" r="50" class="ring-fill" id="normRing"
+                            stroke-dasharray="314" stroke-dashoffset="314"/>
+                    </svg>
+                    <div class="norm-center">
+                        <span class="norm-pct" id="normPct">—</span>
+                        <span class="norm-sub">из 100%</span>
+                    </div>
+                </div>
+                <div class="norm-stats">
+                    <div class="norm-row">
+                        <span class="dot teal"></span>
+                        <span>Сопоставлено</span>
+                        <strong id="matchedCount">—</strong>
+                    </div>
+                    <div class="norm-row">
+                        <span class="dot yellow"></span>
+                        <span>Не сопоставлено</span>
+                        <strong id="unmatchedCount">—</strong>
+                    </div>
+                    <div class="norm-row">
+                        <span class="dot blue"></span>
+                        <span>Верифицировано</span>
+                        <strong id="verifiedCount">—</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Сводка -->
+            <div class="card summary-card">
+                <div class="card-header">
+                    <h3>Сводка системы</h3>
+                    <button class="btn-refresh" onclick="loadDashboard()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                        Обновить
+                    </button>
+                </div>
+                <div class="summary-rows">
+                    <div class="summary-row">
+                        <div class="summary-icon partners-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                        </div>
+                        <div>
+                            <div class="summary-val" id="st-partners">—</div>
+                            <div class="summary-lbl">Активных партнёров</div>
+                        </div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="summary-icon services-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <div>
+                            <div class="summary-val" id="st-services">—</div>
+                            <div class="summary-lbl">Услуг в справочнике</div>
+                        </div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="summary-icon items-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        </div>
+                        <div>
+                            <div class="summary-val" id="st-items">—</div>
+                            <div class="summary-lbl">Позиций прайсов</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-status-bar">
+                    <div class="dsb-label">Статусы документов</div>
+                    <div class="dsb-bar" id="docStatusBar">
+                        <div class="dsb-seg green" id="barDone" style="width:0%"></div>
+                        <div class="dsb-seg orange" id="barReview" style="width:0%"></div>
+                        <div class="dsb-seg red" id="barError" style="width:0%"></div>
+                        <div class="dsb-seg gray" id="barPending" style="width:0%"></div>
+                    </div>
+                    <div class="dsb-legend">
+                        <span><i class="green"></i> Готово</span>
+                        <span><i class="orange"></i> Ревью</span>
+                        <span><i class="red"></i> Ошибка</span>
+                        <span><i class="gray"></i> Ожидание</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ UPLOAD ══════════ -->
+    <section id="sec-upload" class="section">
+        <div class="card upload-card">
+            <div class="upload-hero">
+                <div class="upload-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <h2>Загрузка архива прайсов</h2>
+                <p>Перетащите ZIP-архив сюда или выберите файл</p>
+            </div>
+
+            <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+                 ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <input type="file" id="fileInput" accept=".zip" style="display:none" onchange="handleFileSelect(event)">
+                <div id="dropContent">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    <p><strong>Выберите ZIP-файл</strong> или перетащите</p>
+                    <span>Поддерживаются архивы с PDF, DOCX, XLSX прайсами</span>
+                </div>
+            </div>
+
+            <div id="selectedFile" class="selected-file hidden">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                <span id="selectedFileName">file.zip</span>
+                <button onclick="clearFile()" class="clear-file">×</button>
+            </div>
+
+            <button class="btn-primary btn-upload" id="uploadBtn" onclick="uploadFile()" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Загрузить и обработать
+            </button>
+        </div>
+
+        <!-- Processing status -->
+        <div class="card processing-card hidden" id="processingCard">
+            <div class="proc-header">
+                <h3>Обработка документа</h3>
+                <div class="proc-status-chip" id="procChip">pending</div>
+            </div>
+            <div class="proc-grid">
+                <div class="proc-metric">
+                    <div class="proc-val" id="procStatus">—</div>
+                    <div class="proc-lbl">Статус</div>
+                </div>
+                <div class="proc-metric">
+                    <div class="proc-val" id="procItems">0</div>
+                    <div class="proc-lbl">Найдено позиций</div>
+                </div>
+            </div>
+            <div class="proc-progress">
+                <div class="proc-progress-bar" id="procBar"></div>
+            </div>
+            <div id="procLog" class="proc-log hidden">
+                <div class="proc-log-title">Лог обработки</div>
+                <pre id="procLogText"></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ SEARCH ══════════ -->
+    <section id="sec-search" class="section">
         <div class="card">
-            <h2 class="text-lg font-medium text-slate-900 mb-6">Загрузка документов</h2>
-            <div class="flex gap-4 items-center">
-                <input type="file" id="fileInput" class="file-input">
-                <button onclick="uploadFile()" class="btn-primary">Загрузить</button>
+            <div class="search-bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchInput" placeholder="Введите название услуги или клиники..."
+                    class="search-input" onkeydown="if(event.key==='Enter') doSearch()">
+                <button class="btn-primary" onclick="doSearch()">Найти</button>
             </div>
         </div>
 
-        <div id="statusArea" class="card mt-8 hidden">
-            <h3 class="status-title">Статус обработки</h3>
-            <div class="grid grid-cols-2 gap-8">
-                <div>
-                    <p class="text-sm text-slate-500">Состояние</p>
-                    <p id="statusText" class="status-value">---</p>
-                </div>
-                <div>
-                    <p class="text-sm text-slate-500">Позиций найдено</p>
-                    <p id="itemsCount" class="status-value">0</p>
-                </div>
+        <div id="searchResults" class="search-results"></div>
+    </section>
+
+    <!-- ══════════ UNMATCHED ══════════ -->
+    <section id="sec-unmatched" class="section">
+        <div class="section-toolbar">
+            <div>
+                <h2 class="section-title">Очередь верификации</h2>
+                <p class="section-hint">Сопоставьте позиции прайсов с услугами из справочника</p>
+            </div>
+            <button class="btn-secondary" onclick="loadUnmatched()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                Обновить
+            </button>
+        </div>
+        <div id="unmatchedList">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <p>Нажмите «Обновить» для загрузки очереди</p>
             </div>
         </div>
-    </main>
+    </section>
 
-    <script src="script.js"></script>
+    <!-- ══════════ PARTNERS ══════════ -->
+    <section id="sec-partners" class="section">
+        <div class="section-toolbar">
+            <div>
+                <h2 class="section-title">Партнёры</h2>
+                <p class="section-hint">Список клиник-партнёров</p>
+            </div>
+            <button class="btn-secondary" onclick="loadPartners()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                Обновить
+            </button>
+        </div>
+        <div id="partnersList">
+            <div class="empty-state">
+                <p>Нажмите «Обновить» для загрузки</p>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /main-wrap -->
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
